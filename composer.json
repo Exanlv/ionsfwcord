@@ -1,0 +1,21 @@
+{
+    "name": "exan/ionsfwcord",
+    "description": "Mirror messages from 1 server to another to bypass the nsfw restrictions on iOS",
+    "type": "project",
+    "license": "GPL 3.0",
+    "authors": [
+        {
+            "name": "Exan",
+            "email": "exan@landviz.nl"
+        }
+    ],
+    "require": {
+        "team-reflex/discord-php": "^6.0",
+        "vlucas/phpdotenv": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}
