@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "team-reflex/discord-php": "^6.0",
+        "team-reflex/discord-php": "dev-master",
         "vlucas/phpdotenv": "^5.3"
     },
     "autoload": {

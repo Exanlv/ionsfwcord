@@ -12,25 +12,14 @@ class Allow extends _Command implements _Commandable
     public static $command = 'mirror:guild:allow';
     public static $description = 'Allow current guild to be mirrored';
 
-
     public function handle()
     {
         if ($this->serverConfig->data->channels === []) {
             $guild = &$this->message->channel->guild;
 
-            $everyoneRoleId = (function () use ($guild): string {
-                /**
-                 * @var Role $role
-                 */
-                foreach ($guild->roles as $role) {
-                    /**
-                     * @everyone will always have a position of 0
-                     */
-                    if ($role->position === 0) {
-                        return $role->id;
-                    }
-                }
-            })();
+            $everyoneRoleId = $guild->roles->find(function (Role $role) {
+                return $role->position === 0;
+            });
 
             /**
              * @var Discord\Helpers\Collection<Channel>

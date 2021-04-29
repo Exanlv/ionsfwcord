@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f0d2327376d6ef7c631907be1559940",
+    "content-hash": "77bef67529ba48f2c08f2cf6a5c93878",
     "packages": [
         {
             "name": "discord-php/http",
@@ -2147,16 +2147,16 @@
         },
         {
             "name": "team-reflex/discord-php",
-            "version": "v6.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/discord-php/DiscordPHP.git",
-                "reference": "1bd7abde74587c9b94eda228b349d2e97dc9a686"
+                "reference": "6c55bc57f056a70d93a8dc241f39530f018ace11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/discord-php/DiscordPHP/zipball/1bd7abde74587c9b94eda228b349d2e97dc9a686",
-                "reference": "1bd7abde74587c9b94eda228b349d2e97dc9a686",
+                "url": "https://api.github.com/repos/discord-php/DiscordPHP/zipball/6c55bc57f056a70d93a8dc241f39530f018ace11",
+                "reference": "6c55bc57f056a70d93a8dc241f39530f018ace11",
                 "shasum": ""
             },
             "require": {
@@ -2207,7 +2207,7 @@
                 }
             ],
             "description": "An unofficial API to interact with the voice and text service Discord.",
-            "time": "2021-04-23T23:52:29+00:00"
+            "time": "2021-04-29T10:36:36+00:00"
         },
         {
             "name": "trafficcophp/bytebuffer",
@@ -2333,7 +2333,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "team-reflex/discord-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
