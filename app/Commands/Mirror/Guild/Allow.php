@@ -19,7 +19,7 @@ class Allow extends _Command implements _Commandable
 
             $everyoneRoleId = $guild->roles->find(function (Role $role) {
                 return $role->position === 0;
-            });
+            })->id;
 
             /**
              * @var Discord\Helpers\Collection<Channel>
@@ -64,6 +64,9 @@ class Allow extends _Command implements _Commandable
                 }
             }
 
+            /**
+             * Store mirrorable channels in server config
+             */
             $this->serverConfig->data->channels = $mirrorableChannels;
 
             $additionalMessage = 'All channels available to everyone have been made mirrorable.';
@@ -71,12 +74,18 @@ class Allow extends _Command implements _Commandable
             $additionalMessage = 'Mirrorable channels have been restored from previous configuration.';
         }
 
+        /**
+         * Enable server mirroring
+         */
         $this->serverConfig->data->mirrorable = true;
 
         $totalMessage = "Server mirroring is now allowed for this guild.\n\n";
         $totalMessage .= $additionalMessage . "\n\n";
         $totalMessage .= 'To add/remove channels from this list, use `mirror:channel:allow/disallow #channel`';
 
+        /**
+         * Save configuration
+         */
         $this->serverConfig->save();
 
         $this->message->channel->sendMessage($totalMessage);
