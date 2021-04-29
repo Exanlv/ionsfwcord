@@ -15,6 +15,8 @@ class CommandHandler extends _Handler
         \App\Commands\HelpCommand::class,
         \App\Commands\Mirror\Guild\Allow::class,
         \App\Commands\Mirror\Guild\Disallow::class,
+        \App\Commands\Mirror\Channel\Allow::class,
+        \App\Commands\Mirror\Channel\Disallow::class,
     ];
 
     private array $commandNamespaces = [];
@@ -35,7 +37,7 @@ class CommandHandler extends _Handler
     private function populate()
     {
         foreach (self::$commands as $command) {
-            $trigger = $command::$command;
+            $trigger = explode(' ', $command::$command)[0];
 
             $splitTrigger = explode(':', $trigger);
 
@@ -77,8 +79,12 @@ class CommandHandler extends _Handler
         try {
             $commandClass = $this->getCommand($commandParts, $this->commandNamespaces);
         } catch (CommandNotFoundException $e) {
-            // Ignore
+            echo "Unkown command `" . $command . "`\n"; // @TODO
+            
+            return;
         }
+
+
 
         if (!isset($this->serverConfigs[$message->guild_id])) {
             $this->serverConfigs[$message->guild_id] = new ServerConfig($message->guild_id);
@@ -87,7 +93,11 @@ class CommandHandler extends _Handler
         $commandObj = new $commandClass($prefix, $message, $this->serverConfigs[$message->guild_id]);
 
         if ($commandObj->hasPermission()) {
-            $commandObj->handle();
+            $commandObj->handle()->otherwise(function (\Exception $e) {
+                var_dump($e);
+            });
+        } else {
+            echo "No permissions\n"; // @TODO
         }
     }
 

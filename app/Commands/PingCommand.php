@@ -2,13 +2,18 @@
 
 namespace App\Commands;
 
+use React\Promise\Promise;
+
 class PingCommand extends _Command implements _Commandable
 {
-    public static $command = 'debug:ping';
+    public static $command = 'ping';
 
-    public function handle()
+    public function handle(): Promise
     {
-        $this->message->channel->sendMessage('Pong!');
+        return new Promise(function () {
+            throw new \Exception('asdfsadf');
+            $this->message->channel->sendMessage('Pong!');
+        });
     }
 
     public function hasPermission(): bool
