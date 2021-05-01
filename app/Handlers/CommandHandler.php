@@ -3,7 +3,7 @@
 namespace App\Handlers;
 
 use App\Exceptions\CommandNotFoundException;
-use App\ServerConfig;
+use App\ServerConfigRepository;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
@@ -21,13 +21,15 @@ class CommandHandler extends _Handler
 
     private array $commandNamespaces = [];
 
-    private array $serverConfigs = [];
+    private ServerConfigRepository $serverConfigRepository;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->populate();
+
+        $this->serverConfigRepository = ServerConfigRepository::getInstance();
 
         $this->ionsfwcord->discord->on('command', function (string $prefix, Message $message, Discord $discord) {
             $this->handleIncomingCommand($prefix, $message);
@@ -84,17 +86,13 @@ class CommandHandler extends _Handler
             return;
         }
 
+        $serverConfig = &$this->serverConfigRepository->configs[$message->guild_id];
 
-
-        if (!isset($this->serverConfigs[$message->guild_id])) {
-            $this->serverConfigs[$message->guild_id] = new ServerConfig($message->guild_id);
-        }
-
-        $commandObj = new $commandClass($prefix, $message, $this->serverConfigs[$message->guild_id]);
+        $commandObj = new $commandClass($prefix, $message, $serverConfig);
 
         if ($commandObj->hasPermission()) {
             $commandObj->handle()->otherwise(function (\Exception $e) {
-                var_dump($e);
+                var_dump($e); // @TODO
             });
         } else {
             echo "No permissions\n"; // @TODO

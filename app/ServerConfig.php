@@ -55,4 +55,18 @@ class Config
      * @var array[]
      */
     public array $channels = [];
+
+    /**
+     * The channels being mirrored by other guilds
+     * ["channelId" => ["channelId" => "Foreign channel ID", "guildId" => "Foreign guild ID"]]
+     * @var array[]
+     */
+    public array $mirroredBy = [];
+
+    /**
+     * The channels the guild is mirroring from other guilds
+     * ["foreignChannelId" => ["channelId" => "Channel Id", "webhookToken" => "Webhook Token", "webhookId" => "Webhook ID"]]
+     * @var string[]
+     */
+    public array $mirroring = [];
 }

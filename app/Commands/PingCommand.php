@@ -11,7 +11,6 @@ class PingCommand extends _Command implements _Commandable
     public function handle(): Promise
     {
         return new Promise(function () {
-            throw new \Exception('asdfsadf');
             $this->message->channel->sendMessage('Pong!');
         });
     }
