@@ -30,6 +30,7 @@ class MessageHandler extends _Handler
 
                 return;
             } elseif (isset($this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy[$message->channel_id])) {
+                var_dump($this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy);
                 $discord->emit('seed_mirrors', [
                     $this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy[$message->channel_id],
                     $message,

@@ -9,7 +9,7 @@ use React\Promise\Promise;
 
 class Allow extends _Command implements _Commandable
 {
-    public static $command = 'mirror:channel:allow #channel';
+    public static $command = 'mirror:channel:allow #channels';
     public static $description = 'Allow additional channels to be mirrored';
 
     public function handle(): Promise
@@ -42,7 +42,7 @@ class Allow extends _Command implements _Commandable
         });
     }
 
-    public function hasPermission()
+    public function hasPermission(): bool
     {
         return $this->message->member->getPermissions()['administrator'];
     }

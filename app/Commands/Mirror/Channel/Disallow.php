@@ -38,7 +38,7 @@ class Disallow extends _Command implements _Commandable
         });
     }
 
-    public function hasPermission()
+    public function hasPermission(): bool
     {
         return $this->message->member->getPermissions()['administrator'];
     }

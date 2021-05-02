@@ -40,7 +40,7 @@ class SeedMirrorsHandler extends _Handler
 
     private function handleSingleSeed($channelInfo, Message $message)
     {
-        return new Promise(function () use ($channelInfo, $message) {
+        return new Promise(function ($resolve) use ($channelInfo, $message) {
             /**
              * Server config of foreign guild may not be loaded yet, ensure it exists
              */
@@ -60,11 +60,11 @@ class SeedMirrorsHandler extends _Handler
             /**
              * Send webhook
              */
-            $webhook->execute([
+            $resolve($webhook->execute([
                 'username' =>  $message->author->username . '#' . $message->author->discriminator,
                 'avatar_url' => $message->author->user->avatar,
                 'content' => $message->content,
-            ]);
+            ]));
         });
     }
 

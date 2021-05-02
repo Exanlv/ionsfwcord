@@ -51,7 +51,7 @@ class Config
 
     /**
      * Channels allowed to be mirrored in the guild
-     * ["channelId" => ["send_message" => bool, "attach_files" => bool, "view" => bool]][]
+     * ["channelId" => ["send_messages" => bool, "attach_files" => bool, "view" => bool]][]
      * @var array[]
      */
     public array $channels = [];

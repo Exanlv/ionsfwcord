@@ -17,6 +17,8 @@ class CommandHandler extends _Handler
         \App\Commands\Mirror\Guild\Disallow::class,
         \App\Commands\Mirror\Channel\Allow::class,
         \App\Commands\Mirror\Channel\Disallow::class,
+        \App\Commands\Mirror\Listing\Mirrorable::class,
+        \App\Commands\Mirror\Channel\Set::class,
     ];
 
     private array $commandNamespaces = [];

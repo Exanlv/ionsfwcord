@@ -7,5 +7,5 @@ use React\Promise\Promise;
 interface _Commandable
 {
     public function handle(): Promise;
-    public function hasPermission();
+    public function hasPermission(): bool;
 }
