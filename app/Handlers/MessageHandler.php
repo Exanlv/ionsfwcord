@@ -18,10 +18,14 @@ class MessageHandler extends _Handler
 
         $this->serverConfigRepository = ServerConfigRepository::getInstance();
 
-        
         $this->ionsfwcord->discord->on('message', function (Message $message, Discord $discord) {
+            // var_dump($message->attachments);
+
+            if ($message->webhook_id !== null) return;
+            if ($message->guild_id === null) return;
 
             $this->serverConfigRepository->ensureExists($message->guild_id);
+            $serverConfig = &$this->serverConfigRepository->configs[$message->guild_id];
 
             if (str_starts_with($message->content, self::$prefix)) {
                 $message->content = substr($message->content, strlen(self::$prefix));
@@ -29,10 +33,15 @@ class MessageHandler extends _Handler
                 $discord->emit('command', [self::$prefix, $message, $discord]);
 
                 return;
-            } elseif (isset($this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy[$message->channel_id])) {
-                var_dump($this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy);
+            } elseif (isset($serverConfig->data->mirroredBy[$message->channel_id])) {
                 $discord->emit('seed_mirrors', [
                     $this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy[$message->channel_id],
+                    $message,
+                    $discord,
+                ]);
+            } elseif (isset($serverConfig->data->feeding[$message->channel_id])) {
+                $discord->emit('feed_mirrors', [
+                    $serverConfig->data->feeding[$message->channel_id],
                     $message,
                     $discord,
                 ]);

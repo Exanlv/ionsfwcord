@@ -4,11 +4,8 @@ namespace App\Handlers;
 
 use App\ServerConfigRepository;
 use Discord\Discord;
-use Discord\Http\Exceptions\NoPermissionsException;
-use Discord\Parts\Channel\Channel;
 use Discord\Parts\Channel\Message;
 use Discord\Parts\Channel\Webhook;
-use Discord\Parts\User\User;
 use React\Promise\Promise;
 
 class SeedMirrorsHandler extends _Handler

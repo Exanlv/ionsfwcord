@@ -65,8 +65,15 @@ class Config
 
     /**
      * The channels the guild is mirroring from other guilds
-     * ["foreignChannelId" => ["channelId" => "Channel Id", "webhookToken" => "Webhook Token", "webhookId" => "Webhook ID"]]
+     * ["foreignChannelId" => ["foreignGuildId" => "Guild ID", "channelId" => "Channel ID", "webhookToken" => "Webhook Token", "webhookId" => "Webhook ID"]]
      * @var string[]
      */
     public array $mirroring = [];
+
+    /**
+     * The channels in the guild which feed back to a different channel on a seperate guild
+     * ["feederChannelId" => ["channelId" => "Seeder Channel ID", "guildId" => "Seeder Guild ID"]]
+     * @var string[]
+     */
+    public array $feeding = [];
 }

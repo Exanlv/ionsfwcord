@@ -4,6 +4,7 @@ namespace App\Commands\Mirror\Channel;
 
 use App\Commands\_Command;
 use App\Commands\_Commandable;
+use App\Helpers\WebhooksHelper;
 use App\Ionsfwcord;
 use App\ServerConfigRepository;
 use Discord\Http\Exceptions\NoPermissionsException;
@@ -49,7 +50,7 @@ class Set extends _Command implements _Commandable
 
 
             /**
-             * @var Discord\Parts\Guild\Guild $guild
+             * @var \Discord\Parts\Guild\Guild $guild
              */
             $guild = $ionsfwcord->discord->guilds->get('id', $guildId);
 
@@ -62,7 +63,7 @@ class Set extends _Command implements _Commandable
             }
 
             /**
-             * @var Discord\Parts\Channel\Channel $channel
+             * @var \Discord\Parts\Channel\Channel $channel
              */
             $channel = $guild->channels->get('id', $channelId);
 
@@ -114,12 +115,7 @@ class Set extends _Command implements _Commandable
             /**
              * Create a webhook for current channel
              */
-            $ionsfwcord->discord->http->post('channels/' . $this->message->channel_id . '/webhooks', [
-                'name' => 'Ionsfwcord',
-                'avatar' => null,
-            ])->then(function ($webhookData) use ($resolve, $ionsfwcord, &$serverConfig, $channel) {
-                $webhook = new Webhook($ionsfwcord->discord, (array) $webhookData);
-
+            WebhooksHelper::createWebhook($this->message->channel, 'Ionsfwcord')->then(function (Webhook $webhook) use ($resolve, &$serverConfig, $guild, $channel) {
                 if (!isset($serverConfig->data->mirroredBy[$channel->id])) {
                     $serverConfig->data->mirroredBy[$channel->id] = [];
                 }
@@ -133,6 +129,11 @@ class Set extends _Command implements _Commandable
                     'channelId' => $this->message->channel_id,
                     'webhookToken' => $webhook->token,
                     'webhookId' => $webhook->id,
+                ];
+
+                $this->serverConfig->data->feeding[$this->message->channel_id] = [
+                    'channelId' => $channel->id,
+                    'guildId' => $guild->id,
                 ];
 
                 $serverConfig->save();
@@ -157,6 +158,6 @@ class Set extends _Command implements _Commandable
 
     public function hasPermission(): bool
     {
-        return $this->message->channel->guild->owner_id === $this->message->author->id;
+        return $this->message->member->getPermissions()['administrator'];
     }
 }
