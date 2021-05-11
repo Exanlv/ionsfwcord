@@ -33,8 +33,6 @@ class ReadyHandler extends _Handler
             new MirrorHandler();
 
             echo 'Bot is ready!', PHP_EOL;
-
-            var_dump(OptimizedMirrorHelper::$optimizedWebhookConfig);
         });
     }
 }
