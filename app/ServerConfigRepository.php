@@ -13,7 +13,19 @@ class ServerConfigRepository
 
     private function __construct()
     {
-        
+        $this->loadAll();
+    }
+
+    private function loadAll()
+    {
+        $ionsfwcord = Ionsfwcord::getInstance();
+
+        /**
+         * @var \Discord\Parts\Guild\Guild $guild
+         */
+        foreach ($ionsfwcord->discord->guilds as $guild) {
+            $this->ensureExists($guild->id);
+        }
     }
 
     public static function getInstance(): ServerConfigRepository

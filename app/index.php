@@ -2,11 +2,7 @@
 
 namespace App;
 
-use App\Handlers\CommandHandler;
-use App\Handlers\FeedMirrorsHandler;
-use App\Handlers\MessageHandler;
 use App\Handlers\ReadyHandler;
-use App\Handlers\SeedMirrorsHandler;
 use Dotenv\Dotenv;
 
 include __DIR__.'/../vendor/autoload.php';
@@ -17,9 +13,5 @@ $dotenv->load();
 $ionsfwcord = Ionsfwcord::getInstance();
 
 new ReadyHandler();
-new MessageHandler();
-new CommandHandler();
-new SeedMirrorsHandler();
-new FeedMirrorsHandler();
 
 $ionsfwcord->start();

@@ -2,6 +2,7 @@
 
 namespace App\Handlers;
 
+use App\Helpers\OptimizedMirrorHelper;
 use App\ServerConfigRepository;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -19,8 +20,6 @@ class MessageHandler extends _Handler
         $this->serverConfigRepository = ServerConfigRepository::getInstance();
 
         $this->ionsfwcord->discord->on('message', function (Message $message, Discord $discord) {
-            // var_dump($message->attachments);
-
             if ($message->webhook_id !== null) return;
             if ($message->guild_id === null) return;
 
@@ -33,15 +32,9 @@ class MessageHandler extends _Handler
                 $discord->emit('command', [self::$prefix, $message, $discord]);
 
                 return;
-            } elseif (isset($serverConfig->data->mirroredBy[$message->channel_id])) {
-                $discord->emit('seed_mirrors', [
-                    $this->serverConfigRepository->configs[$message->guild_id]->data->mirroredBy[$message->channel_id],
-                    $message,
-                    $discord,
-                ]);
-            } elseif (isset($serverConfig->data->feeding[$message->channel_id])) {
-                $discord->emit('feed_mirrors', [
-                    $serverConfig->data->feeding[$message->channel_id],
+            } elseif (isset(OptimizedMirrorHelper::$optimizedConfig[$message->channel_id])) {
+                $discord->emit('mirror', [
+                    OptimizedMirrorHelper::$optimizedConfig[$message->channel_id],
                     $message,
                     $discord,
                 ]);
