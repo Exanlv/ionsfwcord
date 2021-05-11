@@ -3,6 +3,7 @@
 namespace App\Handlers;
 
 use App\Handlers\_Handler;
+use App\Helpers\SendWebhooksHelper;
 use App\Helpers\WebhooksHelper;
 use App\Ionsfwcord;
 use App\ServerConfigRepository;
@@ -48,8 +49,6 @@ class FeedMirrorsHandler extends _Handler
         $webhooks = array_map(function ($mirrorInfo) use ($feedingInfo) {
             $this->serverConfigRepository->ensureExists($mirrorInfo['guildId']);
 
-            var_dump($this->serverConfigRepository->configs[$mirrorInfo['guildId']]->data->mirroring, $feedingInfo['channelId']);
-
             $webhookInfo = &$this->serverConfigRepository->configs[$mirrorInfo['guildId']]->data->mirroring[$feedingInfo['channelId']];
 
             return ['token' => $webhookInfo['webhookToken'], 'id' => $webhookInfo['webhookId']];
@@ -61,22 +60,22 @@ class FeedMirrorsHandler extends _Handler
             return;
         }
 
-        $webhookData = WebhooksHelper::messageToWebhookData($message, $seederChannelConfig['attach_files']);
+        $webhookDatas = WebhooksHelper::messageToWebhookData($message, $seederChannelConfig['attach_files']);
 
-        $this->sendWebhooks($webhooks, $webhookData);
+        $this->sendWebhooks($webhooks, $webhookDatas);
     }
 
-    private function sendWebhooks(array $webhooks, array $webhookData)
+    private function sendWebhooks(array $webhooks, array $webhookDatas)
     {
         $discord = &Ionsfwcord::getInstance()->discord;
 
         foreach ($webhooks as $webhook) {
-            $this->sendSingleWebhook(new Webhook($discord, $webhook), $webhookData);
+            $this->sendSingleWebhook(new Webhook($discord, $webhook), $webhookDatas);
         }
     }
 
-    private function sendSingleWebhook(Webhook $webhook, array $webhookData)
+    private function sendSingleWebhook(Webhook $webhook, array $webhookDatas)
     {
-        return $webhook->execute($webhookData);
+        return new SendWebhooksHelper($webhook, $webhookDatas);
     }
 }

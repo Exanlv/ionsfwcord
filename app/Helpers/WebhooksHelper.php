@@ -26,7 +26,7 @@ class WebhooksHelper
         });
     }
 
-    public static function messageToWebhookData(Message $message, $allowAttachments = false)
+    public static function messageToWebhookData(Message $message, $allowAttachments = false): array
     {
         $webhookData = [
             'username' =>  $message->author->username . '#' . $message->author->discriminator,
@@ -34,10 +34,16 @@ class WebhooksHelper
             'content' => $message->content,
         ];
 
-        $webhookData['embed'] = array_map(function ($attachment) {
-            return ['image' => ['url' => $attachment->proxy_url]];
-        }, $message->attachments);
+        $webhooks = [$webhookData];
 
-        return $webhookData;
+        foreach ($message->attachments as $attachment) {
+            $webhookData['content'] = $attachment->proxy_url;
+
+            $webhooks[] = $webhookData;
+        }
+
+        return array_values(array_filter($webhooks, function ($webhookData) {
+            return $webhookData['content'] !== '';
+        }));
     }
 }

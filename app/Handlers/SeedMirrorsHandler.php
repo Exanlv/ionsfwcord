@@ -2,6 +2,8 @@
 
 namespace App\Handlers;
 
+use App\Helpers\SendWebhooksHelper;
+use App\Helpers\WebhooksHelper;
 use App\ServerConfigRepository;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -54,78 +56,11 @@ class SeedMirrorsHandler extends _Handler
                 "channel_id" => $webhookInfo['channelId'],
             ]);
 
-            /**
-             * Send webhook
-             */
-            $resolve($webhook->execute([
-                'username' =>  $message->author->username . '#' . $message->author->discriminator,
-                'avatar_url' => $message->author->user->avatar,
-                'content' => $message->content,
-            ]));
+            $webhooksData = WebhooksHelper::messageToWebhookData($message);
+
+            new SendWebhooksHelper($webhook, $webhooksData);
+
+            $resolve();
         });
     }
-
-    /*
-
-    Code below was made to dynamically create/delete webhooks. Turns out you can overwrite username/avatar so this isnt necessary
-    Some of this code will be reusable for channel mirror configuration
-
-    private function convertMessage(Message $message)
-    {
-        return [
-            'content' => $message->content,
-        ];
-    }
-
-    private function getWebhook($channel, $user)
-    {
-        return new Promise(function ($resolve) use ($channel, $user) {
-            $this->ionsfwcord->discord->http->get('channels/' . $channel->id . '/webhooks')->then(function ($res) use ($channel, $user, $resolve) {
-                $existingWebhooks = array_map(function ($webhook) {
-                    return new Webhook($this->ionsfwcord->discord, (array) $webhook);
-                }, $res);
-    
-                $webhookUsername = $user->username . '#' . $user->discriminator;
-
-                $webhook = (function () use ($existingWebhooks, $webhookUsername) {
-                    foreach ($existingWebhooks as $webhook) {
-                        if ($webhook->name === $webhookUsername) {
-                            return $webhook;
-                        }
-                    }
-
-                    return null;
-                })();
-
-                $resolve($webhook ?? $this->createWebhook($channel, $user, $existingWebhooks));
-            });
-        });
-    }
-
-    private function createWebhook($channel, $user, $existingWebhooks)
-    {
-        return new Promise(function ($resolve) use ($channel, $user, $existingWebhooks) {
-            $this->deleteOldestWebhookIfNecessary($channel, $existingWebhooks)->then(function ($ret) use ($channel, $user, $resolve) {
-                $webhookUsername = $user->username . '#' . $user->discriminator;
-                
-                $this->ionsfwcord->discord->http->post('channels/' . $channel->id . '/webhooks', [
-                    'name' => $webhookUsername,
-                    'avatar' => null,
-                ])->then(function ($webhook) use ($resolve) {
-                    $resolve(new Webhook($this->ionsfwcord->discord, (array) $webhook));
-                })->otherwise(function (NoPermissionsException $err) use ($channel) {
-                    $channel->sendMessage('Unable to create webhooks to mirror messages.');
-                });
-            });
-        });
-    }
-
-    private function deleteOldestWebhookIfNecessary($channel, $existingWebhooks)
-    {
-        return new Promise(function ($resolve) {
-            $resolve(true);
-        });
-    }
-    
-    */
 }
